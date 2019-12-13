@@ -8,8 +8,7 @@
 3. 学习率,Adam默认是1e-3
 4. batchSize
 ##### e.g. python 0.py 0 0 1e-3 16
->
->
+
 ### 其他相关文件
 #### baseNet.py: 基本网络结构的定义;
 #### bmpLoader.py: 加载bmp数据集（训练集）;
