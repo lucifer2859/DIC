@@ -17,6 +17,7 @@
 #### pytorch_msssim: MS-SSIM的pytorch实现;
 #### rgb121Compress: 之前科研过程中的图像压缩模型;
 #### models: 模型文件的存储地址
+#### log: 模型训练日志的存储地址
 
 ### 移植到新环境中需要根据训练集和测试集地址修改bmpLoader.py与rgb121Compress_new/xxx.py中的对应内容.
 
