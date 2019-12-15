@@ -162,11 +162,13 @@ def RGB444DetachToRGGBTensor(inputData, KernelList, catFlat = False, catDim=0, r
         elif(retType=='B'):
             return F.conv2d(inputData[2].permute([2, 0, 1]).unsqueeze(1), KernelList[3], stride=2)
 
-    RTensor = F.conv2d(inputData[0].permute([2, 0, 1]).unsqueeze(1), KernelList[0], stride=2) # m * n * batchSize -> batchSize * m * n -> batchSize * 1 * m * n
+    # (m,n,batchSize) -> (batchSize,m,n) -> (batchSize,1,m,n) -> (batchSize,1,m/2,n/2)
+    RTensor = F.conv2d(inputData[0].permute([2, 0, 1]).unsqueeze(1), KernelList[0], stride=2) 
     G1Tensor = F.conv2d(inputData[1].permute([2, 0, 1]).unsqueeze(1), KernelList[1], stride=2)
     G2Tensor = F.conv2d(inputData[1].permute([2, 0, 1]).unsqueeze(1), KernelList[2], stride=2)
     BTensor = F.conv2d(inputData[2].permute([2, 0, 1]).unsqueeze(1), KernelList[3], stride=2)
     if(catFlat==True):
+        # (batchSize,1,m/2,n/2) -> (4*batchSize,1,m/2,n/2)
         return torch.cat((RTensor, G1Tensor, G2Tensor, BTensor), catDim)
     elif(catFlat==False):
         return RTensor, G1Tensor, G2Tensor, BTensor

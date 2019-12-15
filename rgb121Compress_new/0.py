@@ -77,8 +77,8 @@ else:
     decNet = torch.load('../models/decNet_' + sys.argv[0] + '.pkl', map_location='cuda:'+sys.argv[1]).cuda().train()
     print('read ../models/' + sys.argv[0] + '.pkl')
 
-print(encNet)
-print(decNet)
+# print(encNet)
+# print(decNet)
 
 optimizer = torch.optim.Adam([{'params':encNet.parameters()},{'params':decNet.parameters()}], lr=float(sys.argv[3]))
 
@@ -95,7 +95,7 @@ testData = torch.empty([testImgSum, 3, 256, 256]).float().cuda()
 for k in range(testImgSum):
     testData[k] = torch.from_numpy(testDataReader.readImg()).float().cuda()
 
-for i in range(999999999):
+for i in range(1000000):
 
     for k in range(batchSize):
         trainData[k] = torch.from_numpy(dReader.readImg()).float().cuda()
@@ -149,21 +149,26 @@ for i in range(999999999):
             decData = decNet(qEncData) * 255
             testLoss = - pytorch_msssim.ms_ssim(testGrayData, decData, win_size=7, data_range=255,
                                                 size_average=True).item()
-            print('测试损失 = ', testLoss)
+            # print('测试损失 = ', testLoss)
+            print('test:%d,%.3f' % (i, testLoss))
+
             for param in encNet.parameters():
                 param.requires_grad = True
             for param in decNet.parameters():
                 param.requires_grad = True
-            if (minLoss > testLoss):  # 保存最小loss对应的模型
+            if (minLoss > testLoss):  # 保存最小testLoss对应的模型
                 minLoss = testLoss
                 torch.save(encNet, '../models/encNet_' + sys.argv[0] + '.pkl')
                 torch.save(decNet, '../models/decNet_' + sys.argv[0] + '.pkl')
                 print('save ../models/' + sys.argv[0] + '.pkl')
                 lastSavedI = i
+            print('minTestLoss:%d,%.3f' % (lastSavedI, minLoss))
 
 
     optimizer.step()
 
     # print(sys.argv)
-    print('训练到第%d次, 本次训练损失 = %.3f' % (i, loss))
-    print('最小测试损失 = %.3f, 上次保存模型时对应的训练次数为%d' % (minLoss, lastSavedI))
+    # print('训练到第%d次, 本次训练损失 = %.3f' % (i, loss))
+    # print('最小测试损失 = %.3f, 上次保存模型时对应的训练次数为%d' % (minLoss, lastSavedI))
+
+    print('train:%d,%.3f' % (i, loss))
