@@ -73,7 +73,7 @@ lastSavedI = 0
 C = torch.arange(start=0, end=16).unsqueeze_(1).float().cuda()
 sigma = 1
 testImgSum = 24
-testImgDir = '/datasets/MLG/wfang/imgCompress/kodim256/'
+testImgDir = '/home/dchen/dataset/256bmp/test/'
 testDataReader = bmpLoader.datasetReader(colorFlag=True, batchSize=1, bufferBatchSizeMultiple=testImgSum,
                                          imgDir=testImgDir, imgSum=testImgSum)
 testData = torch.empty([testImgSum, 3, 256, 256]).float().cuda()

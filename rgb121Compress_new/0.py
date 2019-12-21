@@ -13,8 +13,8 @@ import bmpLoader
 import rgbCompress
 import softToHardQuantize
 import baseNet
-#0.935
 
+# 0.935
 
 class EncodeNet(nn.Module):
     def __init__(self):

@@ -44,28 +44,27 @@ class SampleNet(nn.Module): # 默认核为2，步长为2的升/降采样网络�
 class ResNet(nn.Module): # 2层残差网络
     def __init__(self, transpose, channels, kernel_size, stride=1,
                  padding=0, dilation=1, groups=1,
-                 bias=True, padding_mode='zeros', batch_norm=True):
+                 bias=True, padding_mode='zeros', batch_norm=True, skip=True):
         super(ResNet, self).__init__()
         self.batch_norm = batch_norm
-        if(transpose==False):
+        self.skip = skip
+        if (transpose==False):
             self.conv1X = nn.Conv2d(channels, channels, (kernel_size, 1), (stride, 1),
                                     (padding, 0), dilation, groups,
                                    bias, padding_mode)
             self.conv1Y = nn.Conv2d(channels, channels, (1, kernel_size), (1, stride),
                                     (0, padding), dilation, groups,
                                     bias, padding_mode)
-            if(self.batch_norm==True):
+            if (self.batch_norm==True):
                 self.bn1 = nn.BatchNorm2d(channels)
-            self.conv2X = nn.Conv2d(channels, channels, (kernel_size, 1), (stride, 1),
-                                    (padding, 0), dilation, groups,
-                                   bias, padding_mode)
-            self.conv2Y = nn.Conv2d(channels, channels, (1, kernel_size), (1, stride),
-                                    (0, padding), dilation, groups,
-                                    bias, padding_mode)
-            if (self.batch_norm == True):
                 self.bn2 = nn.BatchNorm2d(channels)
 
-        elif(transpose==True):
+            self.conv2X = nn.Conv2d(channels, channels, (kernel_size, 1), (stride, 1),
+                                    (padding, 0), dilation, groups, bias, padding_mode)
+            self.conv2Y = nn.Conv2d(channels, channels, (1, kernel_size), (1, stride),
+                                    (0, padding), dilation, groups, bias, padding_mode)
+
+        elif (transpose==True):
             self.conv1X = nn.ConvTranspose2d(channels, channels, (kernel_size, 1), (stride, 1),
                                              (padding, 0), output_padding=0, groups=groups, bias=bias,
                                              dilation=dilation, padding_mode=padding_mode)
@@ -74,21 +73,24 @@ class ResNet(nn.Module): # 2层残差网络
                                              dilation=dilation, padding_mode=padding_mode)
             if (self.batch_norm == True):
                 self.bn1 = nn.BatchNorm2d(channels)
+                self.bn2 = nn.BatchNorm2d(channels)
+
             self.conv2X = nn.ConvTranspose2d(channels, channels, (kernel_size, 1), (stride, 1),
                                              (padding, 0), output_padding=0, groups=groups, bias=bias,
                                              dilation=dilation, padding_mode=padding_mode)
             self.conv2Y = nn.ConvTranspose2d(channels, channels, (1, kernel_size), (1, stride),
                                              (0, padding), output_padding=0, groups=groups, bias=bias,
                                              dilation=dilation, padding_mode=padding_mode)
-            if (self.batch_norm == True):
-                self.bn2 = nn.BatchNorm2d(channels)
-
 
     def forward(self, x):
         if (self.batch_norm == True):
-            return x + self.bn2(F.leaky_relu_(self.conv2Y(F.leaky_relu_(self.conv2X(self.bn1(F.leaky_relu_(self.conv1Y(F.leaky_relu_(self.conv1X(x))))))))))
+            if (self.skip == True):
+                return F.leaky_relu_(x + self.bn2(self.conv2Y(self.conv2X(F.leaky_relu_(self.bn1(self.conv1Y(self.conv1X(x))))))))
+            return F.leaky_relu_(self.bn2(self.conv2Y(self.conv2X(F.leaky_relu_(self.bn1(self.conv1Y(self.conv1X(x))))))))
         else:
-            return x + F.leaky_relu_(self.conv2Y(F.leaky_relu_(self.conv2X(F.leaky_relu_(self.conv1Y(F.leaky_relu_(self.conv1X(x))))))))
+            if (self.skip == True):
+                return F.leaky_relu_(x + self.conv2Y(self.conv2X(F.leaky_relu_(self.conv1Y(self.conv1X(x))))))
+            return F.leaky_relu_(self.conv2Y(self.conv2X(F.leaky_relu_(self.conv1Y(self.conv1X(x))))))
 
 
 def setModelParamRequiresGrad(model, requires_grad=False):
