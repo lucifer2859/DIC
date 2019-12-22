@@ -1,6 +1,6 @@
 # leinao
 类脑智能课程大作业
-### 本次类脑智能课程大作业主要的图像压缩模型文件参见rgb121Compress_new;
+### 本次类脑智能课程大作业主要的图像压缩模型文件参见rgb121Compress_new, rgbCom_new;
 #### 在文件夹内直接执行如下命令python xxx.py [argv]
 ##### argv:
 1. 使用哪个显卡;
@@ -8,6 +8,7 @@
 3. 学习率, Adam默认是1e-3;
 4. batchSize;
 ##### e.g. python 0.py 0 0 1e-3 16
+##### e.g. python rec1.py 0 0 1e-3 2
 
 ### 其他相关文件
 #### baseNet.py: 基本网络结构的定义;
