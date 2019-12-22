@@ -12,11 +12,12 @@
 
 ### 其他相关文件
 #### baseNet.py: 基本网络结构的定义;
-#### bmpLoader.py: 加载bmp数据集（训练集）;
-#### rgbCompress.py: 将RGB图片通过RGGB等形式采样成单通道图片;
+#### bmpLoader.py: 加载数据集（训练集）;
+#### rgbCompress.py: 将RGB图片通过RGGB等形式进行处理;
 #### pytorch_gdn: GDN层的pytorch实现;
 #### pytorch_msssim: MS-SSIM的pytorch实现;
 #### rgb121Compress: 之前科研过程中的图像压缩模型;
+#### rgbCom: 之前科研过程中的ResNet复原模型;
 #### models: 模型文件的存储地址;
 #### log: 模型训练日志的存储地址;
 #### log/data: 处理后的模型训练日志的存储地址.
