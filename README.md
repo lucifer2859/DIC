@@ -1,6 +1,6 @@
-# leinao
-类脑智能课程大作业
-### 本次类脑智能课程大作业主要的图像压缩模型文件参见rgb121Compress_new, rgbCom_new;
+# DIC
+深度图像压缩
+### 主要的图像压缩模型文件参见rgb121Compress_new, rgbCom_new;
 #### 在文件夹内直接执行如下命令python xxx.py [argv]
 ##### argv:
 1. 使用哪个显卡;
